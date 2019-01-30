@@ -1,6 +1,7 @@
 {
   "name": "@ebfnb/website",
   "version": "0.1.0",
+  "license": "AGPL-3.0-or-later",
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.6",
@@ -43,6 +44,7 @@
     "postcss-loader": "3.0.0",
     "postcss-preset-env": "6.3.1",
     "postcss-safe-parser": "4.0.1",
+    "prettier": "^1.16.2",
     "react": "^16.8.0-alpha.1",
     "react-app-polyfill": "^0.2.0",
     "react-dev-utils": "^7.0.1",
