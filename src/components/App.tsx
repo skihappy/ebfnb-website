@@ -15,7 +15,7 @@ export const DefaultLazyRouteFallback = () => (
 
 export const LazyRoute = ({
   component,
-  Fallback = DefaultLazyRouteFallback
+  Fallback = DefaultLazyRouteFallback,
 }: {
   path: string
   component: string
@@ -51,7 +51,13 @@ const App = () => {
         `}
       >
         <Router>
-          <LazyRoute path="/cook" component="CookPage" />
+          <LazyRoute path="/" component="HomePage" />
+          <LazyRoute path="/volunteer" component="VolunteerPage" />
+          <LazyRoute path="/eat" component="EatPage" />
+          <LazyRoute path="/about" component="AboutPage" />
+          <LazyRoute path="/blog" component="BlogPage" />
+          <LazyRoute path="/join" component="JoinPage" />
+          <LazyRoute path="/dashboard" component="DashboardPage" />
         </Router>
       </LayoutContainer>
     </Fragment>

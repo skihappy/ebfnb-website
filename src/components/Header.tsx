@@ -7,10 +7,10 @@ import logo from '../assets/food-not-bombs.svg'
 export const jsxFix = jsx
 
 const routes = {
-  '/cook': { text: 'Cook with us', alwaysShow: true },
-  '/eat': { text: 'Eat with us', alwaysShow: true },
+  '/volunteer': { text: 'Volunteer with Us', alwaysShow: true },
+  '/eat': { text: 'Eat with Us', alwaysShow: true },
   '/blog': { text: 'Blog', alwaysShow: true },
-  '/about': { text: 'About', alwaysShow: true }
+  '/about': { text: 'About', alwaysShow: true },
 }
 
 const Logo = () => (
