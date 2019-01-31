@@ -1,28 +1,61 @@
-import React, { Component } from 'react'
-import logo from '../assets/logo.svg'
-import '../assets/App.css'
+/** @jsx jsx */
+import { css, Global, jsx } from '@emotion/core'
+import { Router } from '@reach/router'
+import { Fragment, lazy, Suspense } from 'react'
+import LayoutContainer from './LayoutContainer'
+import Header from './Header'
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    )
-  }
+export const jsxFix = jsx
+
+export const DefaultLazyRouteFallback = () => (
+  <div>
+    <p>Loading....</p>
+  </div>
+)
+
+export const LazyRoute = ({
+  component,
+  Fallback = DefaultLazyRouteFallback
+}: {
+  path: string
+  component: string
+  Fallback?: () => JSX.Element
+}) => {
+  const RouteComponent = lazy(() => import(`./${component}`))
+  return (
+    <Suspense fallback={Fallback}>
+      <RouteComponent />
+    </Suspense>
+  )
+}
+
+const App = () => {
+  return (
+    <Fragment>
+      <Global
+        styles={css`
+          * {
+            box-sizing: border-box;
+          }
+
+          body {
+            overflow-y: scroll;
+          }
+        `}
+      />
+      <Header />
+      <LayoutContainer
+        tag="main"
+        customCss={css`
+          margin-top: 100px;
+        `}
+      >
+        <Router>
+          <LazyRoute path="/cook" component="CookPage" />
+        </Router>
+      </LayoutContainer>
+    </Fragment>
+  )
 }
 
 export default App
