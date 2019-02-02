@@ -1,67 +1,18 @@
-/** @jsx jsx */
-import { css, Global, jsx } from '@emotion/core'
-import { Router } from '@reach/router'
-import { Fragment, lazy, Suspense } from 'react'
-import LayoutContainer from './LayoutContainer'
+import React from 'react'
 import Header from './Header'
+import GlobalStyles from './GlobalStyles'
+import Main from './Main'
+import { UserProvider } from './UserContext'
+import { ThemeProvider } from './ThemeContext'
 
-export const jsxFix = jsx
-
-export const DefaultLazyRouteFallback = () => (
-  <div>
-    <p>Loading....</p>
-  </div>
-)
-
-export const LazyRoute = ({
-  component,
-  Fallback = DefaultLazyRouteFallback,
-}: {
-  path: string
-  component: string
-  Fallback?: () => JSX.Element
-}) => {
-  const RouteComponent = lazy(() => import(`./${component}`))
-  return (
-    <Suspense fallback={Fallback}>
-      <RouteComponent />
-    </Suspense>
-  )
-}
-
-const App = () => {
-  return (
-    <Fragment>
-      <Global
-        styles={css`
-          * {
-            box-sizing: border-box;
-          }
-
-          body {
-            overflow-y: scroll;
-          }
-        `}
-      />
+const App = () => (
+  <UserProvider>
+    <ThemeProvider>
+      <GlobalStyles />
       <Header />
-      <LayoutContainer
-        tag="main"
-        customCss={css`
-          margin-top: 100px;
-        `}
-      >
-        <Router>
-          <LazyRoute path="/" component="HomePage" />
-          <LazyRoute path="/volunteer" component="VolunteerPage" />
-          <LazyRoute path="/eat" component="EatPage" />
-          <LazyRoute path="/about" component="AboutPage" />
-          <LazyRoute path="/blog" component="BlogPage" />
-          <LazyRoute path="/join" component="JoinPage" />
-          <LazyRoute path="/dashboard" component="DashboardPage" />
-        </Router>
-      </LayoutContainer>
-    </Fragment>
-  )
-}
+      <Main />
+    </ThemeProvider>
+  </UserProvider>
+)
 
 export default App

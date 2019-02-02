@@ -3,82 +3,97 @@ import { css, jsx } from '@emotion/core'
 import { Link } from '@reach/router'
 import LayoutContainer from './LayoutContainer'
 import logo from '../assets/food-not-bombs.svg'
+import useRoutes from '../hooks/use-routes'
+import useTheme from '../hooks/use-theme'
 
 export const jsxFix = jsx
 
-const routes = {
-  '/volunteer': { text: 'Volunteer with Us', alwaysShow: true },
-  '/eat': { text: 'Eat with Us', alwaysShow: true },
-  '/blog': { text: 'Blog', alwaysShow: true },
-  '/about': { text: 'About', alwaysShow: true },
+const Logo = () => {
+  return (
+    <Link
+      to="/"
+      data-alt="East Bay Food Not Bombs logo"
+      css={css`
+        background-image: url(${logo});
+        background-repeat: no-repeat;
+        background-size: contain;
+        display: block;
+        height: 60px;
+        overflow: hidden;
+        width: 60px;
+        grid-area: logo;
+      `}
+      title="EBFNB | Home"
+    >
+      <span
+        css={css`
+          padding-left: 60px;
+        `}
+      >
+        EBFNB
+      </span>
+    </Link>
+  )
 }
 
-const Logo = () => (
-  <Link
-    to="/"
-    data-alt="East Bay Food Not Bombs logo"
-    css={css`
-      background-image: url(${logo});
-      background-repeat: no-repeat;
-      background-size: contain;
-      display: block;
-      height: 60px;
-      overflow: hidden;
-      width: 60px;
-      grid-area: logo;
-    `}
-    title="EBFNB | Home"
-  >
-    <span
+const Menu = () => {
+  const { colors } = useTheme()
+  const { getMenuLinks } = useRoutes()
+
+  return (
+    <ul
       css={css`
-        padding-left: 60px;
+        display: grid;
+        grid-area: menu;
+        justify-items: right;
+        margin: 0;
+        padding: 0;
+        place-items: top / center;
+        list-style: none;
+        text-align: center;
       `}
     >
-      EBFNB
-    </span>
-  </Link>
-)
-
-const Menu = () => (
-  <ul
-    css={css`
-      display: grid;
-      grid-area: menu;
-      justify-items: right;
-      place-items: bottom / center;
-      list-style: none;
-      text-align: center;
-    `}
-  >
-    {Object.entries(routes).map(
-      ([key, { text, alwaysShow = false }], index) => {
+      {getMenuLinks().map(({ key, to, label }, index) => {
         return (
           <li
             css={css`
               grid-column-start: ${index + 1};
+              width: 100%;
+              margin: 0;
+              padding: 0;
             `}
+            key={key}
           >
             <Link
-              to={key}
-              key={key}
-              data-nav-type={alwaysShow ? 'primary' : 'secondary'}
+              to={to}
               css={css`
                 display: block;
+                text-decoration: none;
+                line-height: 70px;
+                height: 60px;
+                color: #000;
+                font-size: 20px;
+                border: 1px dotted transparent;
+                &:hover {
+                  text-shadow: 0px 0px 16px ${colors.orange};
+                }
               `}
             >
-              {text}
+              {label}
             </Link>
           </li>
         )
-      }
-    )}
-  </ul>
-)
+      })}
+    </ul>
+  )
+}
 
 const Header = () => {
+  const { fontHeading } = useTheme()
   return (
     <header
       css={css`
+        font-family: ${fontHeading};
         background-color: #fff;
         border-bottom: 1px solid #000;
         box-shadow: 2px 0px 4px 4px rgba(0, 0, 0, 0.5);

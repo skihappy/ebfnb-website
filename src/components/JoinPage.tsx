@@ -1,8 +1,9 @@
 import React from 'react'
+import PageTitle from './PageTitle'
 
 const JoinPage = () => (
   <React.Fragment>
-    <h1>Eat with Us</h1>
+    <PageTitle>Join East Bay Food Not Bombs</PageTitle>
     <div>
       <p>Add page content.</p>
     </div>

@@ -1,8 +1,9 @@
 import React from 'react'
+import PageTitle from './PageTitle'
 
 const DashboardPage = () => (
   <React.Fragment>
-    <h1>Eat with Us</h1>
+    <PageTitle>Dashboard</PageTitle>
     <div>
       <p>Add page content.</p>
     </div>

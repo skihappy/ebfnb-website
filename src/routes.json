@@ -1,0 +1,38 @@
+{
+  "home": {
+    "path": "/",
+    "component": "HomePage",
+    "label": "Homepage",
+    "inMenu": false
+  },
+  "volunteer": {
+    "path": "/volunteer",
+    "component": "VolunteerPage",
+    "label": "Volunteer with Us"
+  },
+  "eat": {
+    "path": "/eat",
+    "component": "EatPage",
+    "label": "Eat with Us"
+  },
+  "about": {
+    "path": "/about",
+    "component": "AboutPage",
+    "label": "About"
+  },
+  "blog": {
+    "path": "/blog",
+    "component": "BlogPage",
+    "label": "Blog"
+  },
+  "join": {
+    "path": "/join",
+    "component": "JoinPage",
+    "label": "Join"
+  },
+  "dashboard": {
+    "path": "/dashboard",
+    "component": "DashboardPage",
+    "label": "My Dashboard"
+  }
+}

@@ -1,8 +1,11 @@
 import React from 'react'
+import Hero from './Hero'
+import PageTitle from './PageTitle'
 
 const HomePage = () => (
   <React.Fragment>
-    <h1>Eat with Us</h1>
+    <Hero />
+    <PageTitle>East Bay Food Not Bombs</PageTitle>
     <div>
       <p>Add page content.</p>
     </div>
