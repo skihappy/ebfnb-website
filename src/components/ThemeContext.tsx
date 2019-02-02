@@ -1,17 +1,28 @@
 import React, { ReactNode, Context } from 'react'
 
-const serifFamily = 'Merriweather, serif'
 const sansSerifFamily = `'Open Sans', sans-serif`
+const serifFamily = 'Merriweather, serif'
 
+const green = '#0b0' // [0, 291, 0,]
 const orange = '#f70'
+const purple = '#ba529f'
 
 const theme = {
-  fontSerif: serifFamily,
-  fontSansSerif: sansSerifFamily,
-  fontDefault: sansSerifFamily,
-  fontHeading: serifFamily,
+  font: {
+    family: {
+      sansSerif: sansSerifFamily,
+      serif: serifFamily,
+      default: sansSerifFamily,
+      heading: serifFamily,
+    },
+  },
   colors: {
+    green,
     orange,
+    purple,
+  },
+  utils: {
+    toRgb: (r, g, b, a = 0) => `rgba(${r}, ${g}, ${b}, ${a})`,
   },
 }
 

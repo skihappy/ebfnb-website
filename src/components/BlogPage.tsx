@@ -3,7 +3,7 @@ import PageTitle from './PageTitle'
 
 const BlogPage = () => (
   <React.Fragment>
-    <PageTitle>Blog</PageTitle>
+    <PageTitle documentTitle="Blog">East Bay Food Not Bombs Blog</PageTitle>
     <div>
       <p>Add page content.</p>
     </div>

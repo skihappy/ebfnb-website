@@ -5,11 +5,11 @@ import { ReactNode } from 'react'
 export const jsxFix = jsx
 
 const LayoutContainer = ({
-  children,
+  children = null,
   customCss = css``,
-  tag: Tag = 'div'
+  tag: Tag = 'div',
 }: {
-  children: ReactNode
+  children?: ReactNode
   customCss?: SerializedStyles
   tag?: string
 }) => (
@@ -20,7 +20,7 @@ const LayoutContainer = ({
         max-width: 60rem;
         margin-left: auto;
         margin-right: auto;
-      `
+      `,
     ]}
   >
     {children}

@@ -16,7 +16,7 @@ const buttonSize = 40
 const createCss = ({ colors }) => ({
   wrapper: css`
     display: grid;
-    grid-template-areas: 'up' 'list' 'down';
+    grid-template-areas: 'up' 'menu' 'down';
     grid-template-rows: repeat(3, ${buttonSize});
     grid-template-columns: ${buttonSize};
     font-size: ${buttonSize};
@@ -50,17 +50,18 @@ const InternalNav = ({
 }) => {
   const theme = useTheme()
   const { wrapper: wrapperCss, button: buttonCss } = createCss(theme)
+
   return (
     <div css={wrapperCss}>
-      <button css={buttonCss('up')} type="button">
-        <FontAwesomeIcon icon={faChevronUp} />
-      </button>
-      <button css={buttonCss('list')} type="button">
-        <FontAwesomeIcon icon={faListOl} />
-      </button>
-      <button css={buttonCss('down')} type="button">
-        <FontAwesomeIcon icon={faChevronDown} />
-      </button>
+      {[
+        { key: 'up', icon: faChevronUp },
+        { key: 'menu', icon: faListOl },
+        { key: 'down', icon: faChevronDown },
+      ].map(({ key, icon }) => (
+        <button key={key} css={buttonCss(key)} type="button">
+          <FontAwesomeIcon icon={icon} />
+        </button>
+      ))}
     </div>
   )
 }

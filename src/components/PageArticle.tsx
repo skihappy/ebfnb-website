@@ -15,7 +15,8 @@ const PageArticle = ({
 }) => (
   <article id={id}>
     <h3>{title}</h3>
-    <div>{content}</div>
+    {/* eslint-disable-next-line react/no-danger */}
+    <div dangerouslySetInnerHTML={{ __html: content }} />
   </article>
 )
 

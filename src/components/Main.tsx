@@ -14,7 +14,7 @@ const Main = () => {
     <LayoutContainer
       tag="main"
       customCss={css`
-        padding-top: calc(60px + 1rem);
+        padding: calc(60px + 1rem) 0.75rem 2.5rem;
       `}
     >
       <Router>

@@ -19,7 +19,7 @@ const PageTitle = ({
   return (
     <h1
       css={css`
-        font-size: 3.5rem;
+        font-size: 2.5rem;
         font-weight: 400;
       `}
     >

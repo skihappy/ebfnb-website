@@ -1,10 +1,12 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 import { Link } from '@reach/router'
+import { Fragment } from 'react'
 import LayoutContainer from './LayoutContainer'
-import logo from '../assets/food-not-bombs.svg'
 import useRoutes from '../hooks/use-routes'
 import useTheme from '../hooks/use-theme'
+import logo from '../assets/food-not-bombs.svg'
+import glow from '../assets/header-glow.jpg'
 
 export const jsxFix = jsx
 
@@ -18,16 +20,17 @@ const Logo = () => {
         background-repeat: no-repeat;
         background-size: contain;
         display: block;
-        height: 60px;
+        height: 80px;
+        margin-left: -20px;
         overflow: hidden;
-        width: 60px;
+        width: 80px;
         grid-area: logo;
       `}
       title="EBFNB | Home"
     >
       <span
         css={css`
-          padding-left: 60px;
+          padding-left: 80px;
         `}
       >
         EBFNB
@@ -89,41 +92,53 @@ const Menu = () => {
 }
 
 const Header = () => {
-  const { fontHeading } = useTheme()
+  const { font, utils } = useTheme()
   return (
-    <header
-      css={css`
-        font-family: ${fontHeading};
-        background-color: #fff;
-        border-bottom: 1px solid #000;
-        box-shadow: 2px 0px 4px 4px rgba(0, 0, 0, 0.5);
-        height: 60px;
-        left: 0;
-        position: fixed;
-        right: 0;
-        top: 0;
-      `}
-    >
-      <LayoutContainer
-        tag="nav"
-        customCss={css`
-          bottom: 0;
-          display: grid;
-          grid-column-gap: 10px;
-          grid-template-areas: 'logo menu toggle';
-          grid-template-columns: 60px 1fr 60px;
-          grid-template-rows: 60px;
+    <Fragment>
+      <header
+        css={css`
+          font-family: ${font.family.heading};
+          background-color: #fff;
+          border-bottom: 1px solid #000;
+          box-shadow: 0px 0px 8px 0px ${utils.toRgb(0, 0, 0, 0.5)};
+          height: 60px;
           left: 0;
-          place-items: top / right;
-          position: absolute;
+          position: fixed;
           right: 0;
           top: 0;
         `}
       >
-        <Logo />
-        <Menu />
-      </LayoutContainer>
-    </header>
+        <LayoutContainer
+          tag="nav"
+          customCss={css`
+            bottom: 0;
+            display: grid;
+            grid-column-gap: 10px;
+            grid-template-areas: 'logo menu toggle';
+            grid-template-columns: 60px 1fr 60px;
+            grid-template-rows: 60px;
+            left: 0;
+            place-items: top / right;
+            position: absolute;
+            right: 0;
+            top: 0;
+          `}
+        >
+          <Logo />
+          <Menu />
+        </LayoutContainer>
+      </header>
+      <LayoutContainer
+        customCss={css`
+          z-index: -1000;
+          background-image: url(${glow});
+          background-size: 100% 15px;
+          height: 15px;
+          margin-top: 55px;
+          margin-bottom: -70px;
+        `}
+      />
+    </Fragment>
   )
 }
 

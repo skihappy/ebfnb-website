@@ -3,7 +3,9 @@ import PageTitle from './PageTitle'
 
 const EatPage = () => (
   <React.Fragment>
-    <PageTitle>Come Eat with Us</PageTitle>
+    <PageTitle documentTitle="Eat with Us">
+      Eat with East Bay Food Not Bombs
+    </PageTitle>
     <div>
       <p>Add page content.</p>
     </div>

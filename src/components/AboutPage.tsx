@@ -22,7 +22,7 @@ const AboutPage = () => (
         `}
       alt="Food Not Bombs volunteers being arrested"
     /> */}
-    <PageTitle documentTitle="About">About East Bay Food Not Bombs</PageTitle>
+    <PageTitle documentTitle="About Us">About East Bay Food Not Bombs</PageTitle>
     {sections.map(section => (
       <PageArticle key={section.id} {...section} />
     ))}

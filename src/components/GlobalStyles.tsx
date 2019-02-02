@@ -5,7 +5,7 @@ import useTheme from '../hooks/use-theme'
 export const jsxFix = jsx
 
 const GlobalStyles = () => {
-  const { fontDefault = 'sans-serif', fontHeading = 'serif' } = useTheme()
+  const { font } = useTheme()
 
   return (
     <Global
@@ -15,7 +15,7 @@ const GlobalStyles = () => {
         }
 
         body {
-          font-family: ${fontDefault};
+          font-family: ${font.family.default};
           overflow-y: scroll;
         }
 
@@ -25,7 +25,13 @@ const GlobalStyles = () => {
         h4,
         h5,
         h6 {
-          font-family: ${fontHeading};
+          font-family: ${font.family.heading};
+        }
+
+        img,
+        video,
+        iframe {
+          max-width: 100%;
         }
       `}
     />
