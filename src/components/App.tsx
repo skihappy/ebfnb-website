@@ -2,17 +2,17 @@ import React from 'react'
 import Header from './Header'
 import GlobalStyles from './GlobalStyles'
 import Main from './Main'
-import { UserProvider } from './UserContext'
+import { CurrentUserProvider } from './CurrentUserContext'
 import { ThemeProvider } from './ThemeContext'
 
 const App = () => (
-  <UserProvider>
+  <CurrentUserProvider>
     <ThemeProvider>
       <GlobalStyles />
       <Header />
       <Main />
     </ThemeProvider>
-  </UserProvider>
+  </CurrentUserProvider>
 )
 
 export default App

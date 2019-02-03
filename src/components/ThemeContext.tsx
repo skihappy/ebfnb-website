@@ -4,6 +4,7 @@ const sansSerifFamily = `'Open Sans', sans-serif`
 const serifFamily = 'Merriweather, serif'
 
 const green = '#0b0' // [0, 291, 0,]
+const darkGreen = '#3a3'
 const orange = '#f70'
 const purple = '#ba529f'
 
@@ -17,6 +18,7 @@ const theme = {
     },
   },
   colors: {
+    darkGreen,
     green,
     orange,
     purple,

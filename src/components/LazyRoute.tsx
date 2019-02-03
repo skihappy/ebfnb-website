@@ -4,7 +4,7 @@ const DefaultFallback = () => <div>Loading....</div>
 
 const LazyRoute = ({
   component,
-  fallback = DefaultFallback,
+  fallback: Fallback = DefaultFallback,
 }: {
   path: string
   component: string
@@ -12,7 +12,7 @@ const LazyRoute = ({
 }) => {
   const RouteComponent = React.lazy(() => import(`./${component}`))
   return (
-    <React.Suspense fallback={fallback}>
+    <React.Suspense fallback={<Fallback />}>
       <RouteComponent />
     </React.Suspense>
   )

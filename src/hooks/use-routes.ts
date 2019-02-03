@@ -1,36 +1,51 @@
-import { useContext } from 'react'
-import routeInfo from '../routes.json'
-import { UserContext } from '../components/UserContext'
+import useCurrentUser from './use-current-user'
+import routeJson from '../routes.json'
+
+const routeInfo = Object.entries(routeJson).map(([key, route]) => ({
+  ...route,
+  key,
+  hasEmbeddedRouter: route.hasEmbeddedRouter || false,
+  inMenu: route.inMenu !== false,
+}))
 
 type Route = {
   key: string
   path: string
   component: string
 }
-const routes: Route[] = Object.entries(routeInfo).map(
-  ([key, { path, component }]) => ({
+const routes: Route[] = routeInfo
+  .map(route =>
+    route.hasEmbeddedRouter
+      ? {
+          ...route,
+          path: `${route.path}/*`,
+        }
+      : route
+  )
+  .map(({ key, path, component }) => ({
     key,
     path,
     component,
-  })
-)
+  }))
 
 type MenuLink = {
   key: string
   to: string
   label: string
 }
-const menuLinks: MenuLink[] = Object.entries(routeInfo)
-  .filter(([_, { inMenu = true }]) => inMenu)
-  .map(([index, { path, label }]) => ({ key: index, to: path, label }))
+const menuLinks: MenuLink[] = routeInfo
+  .filter(({ inMenu }) => inMenu)
+  .map(({ key, path, label }) => ({ key, to: path, label }))
 
 const useRoutes = () => {
-  const { isLoggedIn } = useContext(UserContext)
+  const { isLoggedIn } = useCurrentUser()
 
   return {
-    isUserLoggedIn: isLoggedIn,
     getRoutes: () => routes,
-    getMenuLinks: () => menuLinks,
+    getMenuLinks: () =>
+      menuLinks
+        .filter(({ key }) => key !== 'dashboard' || isLoggedIn())
+        .filter(({ key }) => key !== 'join' || !isLoggedIn()),
   }
 }
 

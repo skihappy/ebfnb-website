@@ -6,7 +6,6 @@ import LayoutContainer from './LayoutContainer'
 import useRoutes from '../hooks/use-routes'
 import useTheme from '../hooks/use-theme'
 import logo from '../assets/food-not-bombs.svg'
-import glow from '../assets/header-glow.jpg'
 
 export const jsxFix = jsx
 
@@ -76,11 +75,23 @@ const Menu = () => {
                 height: 60px;
                 color: #000;
                 font-size: 20px;
-                border: 1px dotted transparent;
-                &:hover {
-                  text-shadow: 0px 0px 16px ${colors.orange};
+                border-bottom: 8px solid transparent;
+
+                &[data-link-type='current'] {
+                  border-bottom-color: #000;
+                  &:hover {
+                    cursor: default;
+                  }
+                }
+
+                &[data-link-type='default']:hover {
+                  color: ${colors.green};
                 }
               `}
+              data-link-type="default"
+              getProps={({ isCurrent }) =>
+                isCurrent ? { 'data-link-type': 'current' } : {}
+              }
             >
               {label}
             </Link>
@@ -128,16 +139,6 @@ const Header = () => {
           <Menu />
         </LayoutContainer>
       </header>
-      <LayoutContainer
-        customCss={css`
-          z-index: -1000;
-          background-image: url(${glow});
-          background-size: 100% 15px;
-          height: 15px;
-          margin-top: 55px;
-          margin-bottom: -70px;
-        `}
-      />
     </Fragment>
   )
 }
