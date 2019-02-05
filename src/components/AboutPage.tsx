@@ -4,7 +4,7 @@ import { Fragment } from 'react'
 import InternalNav from './InternalNav'
 import PageTitle from './PageTitle'
 import sections from '../data/about-content'
-import PageArticle from './PageArticle'
+import Article from './Article'
 // import cookForPeaceImg from '../assets/cook-for-peace.jpg'
 
 export const jsxFix = jsx
@@ -22,9 +22,15 @@ const AboutPage = () => (
         `}
       alt="Food Not Bombs volunteers being arrested"
     /> */}
-    <PageTitle documentTitle="About Us">About East Bay Food Not Bombs</PageTitle>
-    {sections.map(section => (
-      <PageArticle key={section.id} {...section} />
+    <PageTitle documentTitle="About Us">
+      About East Bay Food Not Bombs
+    </PageTitle>
+    {sections.map(({ id, title, content }) => (
+      <Article key={id}>
+        <h3>{title}</h3>
+        {/* eslint-disable-next-line react/no-danger */}
+        <div dangerouslySetInnerHTML={{ __html: content }} />
+      </Article>
     ))}
   </Fragment>
 )

@@ -23,6 +23,7 @@
   },
   "blog": {
     "path": "/blog",
+    "hasEmbeddedRouter": true,
     "component": "BlogPage",
     "label": "Blog"
   },
