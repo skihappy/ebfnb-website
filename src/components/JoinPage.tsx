@@ -3,7 +3,7 @@ import { css, jsx } from '@emotion/core'
 import { navigate } from '@reach/router'
 import React, { useState } from 'react'
 import PageTitle from './PageTitle'
-import useCurrentUser from '../hooks/use-current-user'
+import useCurrentUser from '../hooks/useCurrentUser'
 
 export const jsxFix = jsx
 
@@ -16,7 +16,7 @@ const JoinPage = () => {
     const didLogin = login(email, password)
 
     if (didLogin) {
-      navigate('/dashboard')
+      navigate('/my-fnb/dashboard')
     }
   }
 
@@ -55,18 +55,18 @@ const JoinPage = () => {
         >
           Email address:
           {' '}
+          <input
+            id="email"
+            type="email"
+            css={css`
+              grid-area: B1;
+            `}
+            value={email}
+            onChange={({ target: { value } }) => {
+              setEmail(value)
+            }}
+          />
         </label>
-        <input
-          id="email"
-          type="email"
-          css={css`
-            grid-area: B1;
-          `}
-          value={email}
-          onChange={({ target: { value } }) => {
-            setEmail(value)
-          }}
-        />
         <label
           htmlFor="password"
           css={css`
@@ -75,18 +75,18 @@ const JoinPage = () => {
         >
           Password:
           {' '}
+          <input
+            id="password"
+            type="password"
+            css={css`
+              grid-area: B2;
+            `}
+            value={password}
+            onChange={({ target: { value } }) => {
+              setPassword(value)
+            }}
+          />
         </label>
-        <input
-          id="password"
-          type="password"
-          css={css`
-            grid-area: B2;
-          `}
-          value={password}
-          onChange={({ target: { value } }) => {
-            setPassword(value)
-          }}
-        />
         <button
           type="button"
           css={css`

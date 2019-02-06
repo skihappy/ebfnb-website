@@ -3,13 +3,13 @@ import { css, jsx } from '@emotion/core'
 import { Router } from '@reach/router'
 import LayoutContainer from './LayoutContainer'
 import LazyRoute from './LazyRoute'
-import useRoutes from '../hooks/use-routes'
-import useCurrentUser from '../hooks/use-current-user'
+import useRoutes from '../hooks/useRoutes'
+import useCurrentUser from '../hooks/useCurrentUser'
+import NotFoundPage from './NotFoundPage'
 
 export const jsxFix = jsx
 
 const Main = () => {
-  const { isLoggedIn, getEmail, logout } = useCurrentUser()
   const { getRoutes } = useRoutes()
 
   return (
@@ -19,21 +19,13 @@ const Main = () => {
         padding: calc(60px + 0.5rem) 60px 2.5rem;
       `}
     >
-      {!isLoggedIn() ? null : (
-        <div>
-          You are logged in as
-          {' '}
-          <strong>{getEmail()}</strong>
-          {'. '}
-          <button type="button" onClick={logout}>
-            Log out
-          </button>
-        </div>
-      )}
       <Router>
+        <NotFoundPage default />
+        <LazyRoute key="index" path="/" component="HomePage" />
         {getRoutes().map(({ key, path, component }) => (
           <LazyRoute key={key} path={path} component={component} />
         ))}
+        <LazyRoute key="my-fnb" path="my-fnb/*" component="MyFnbPage" />
       </Router>
     </LayoutContainer>
   )

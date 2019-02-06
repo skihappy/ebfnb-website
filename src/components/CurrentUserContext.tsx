@@ -1,4 +1,5 @@
 import React, { ReactNode, useReducer, useState } from 'react'
+import useLocalStorage from '../hooks/useLocalStorage'
 
 const LOGIN = 'login'
 const LOGOUT = 'logout'
@@ -20,7 +21,8 @@ const initialContext: State = {
 export const CurrentUserContext = React.createContext(initialContext)
 
 export const CurrentUserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState('')
+  const { get: getUser, set: setUser } = useLocalStorage('currentUser', '')
+  const user = getUser()
 
   const currentUser: State = {
     isLoggedIn: () => user !== '',

@@ -3,7 +3,7 @@ import { css, jsx } from '@emotion/core'
 import React from 'react'
 import { Link, Router, RouteComponentProps } from '@reach/router'
 import PageTitle from './PageTitle'
-import data from '../data/blog-content'
+import data from '../data/blogContent'
 import stripHtml from '../other/stripHtml'
 import Article from './Article'
 
@@ -30,7 +30,13 @@ const getTeaserContent = content => {
   return `${teaserContentArray.join(' ')}... `
 }
 
-const BlogTeaser = ({ slug, title, date, content, sticky, img }) => (
+const BlogTeaser = ({ slug, title, date, content, sticky, img }: {
+  slug: string
+  title: string, date: string, content: string, sticky: boolean, img: {
+    src: string
+    alt: string
+  }
+}) => (
   <article
     css={css`
       height: 8rem;
@@ -58,7 +64,12 @@ const BlogTeaser = ({ slug, title, date, content, sticky, img }) => (
         background-repeat: no-repeat;
       `}
     >
-      <strong>{date} &mdash; </strong>
+      <strong>
+        {date}
+        {' '}
+        &mdash;
+        {' '}
+      </strong>
       {getTeaserContent(content)}
       <Link to={slug}>Read&nbsp;more&nbsp;&raquo;</Link>
     </p>
@@ -66,7 +77,7 @@ const BlogTeaser = ({ slug, title, date, content, sticky, img }) => (
 )
 
 // const BlogPost: Route = ({ slug, title, date, content, img }) => (
-const BlogPost: Route<{ id: string }> = ({ id }) => {
+const BlogPost = ({ id }: { path: string, id?: string }) => {
   const { title, date, content, img } = data
     .filter(({ slug }) => slug === id)
     .pop()

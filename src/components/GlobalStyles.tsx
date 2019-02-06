@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, Global, jsx } from '@emotion/core'
-import useTheme from '../hooks/use-theme'
+import useTheme from '../hooks/useTheme'
 
 export const jsxFix = jsx
 

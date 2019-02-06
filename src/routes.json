@@ -1,13 +1,6 @@
 {
-  "home": {
-    "path": "/",
-    "component": "HomePage",
-    "label": "Homepage",
-    "inMenu": false
-  },
   "volunteer": {
     "path": "/volunteer",
-    "hasEmbeddedRouter": true,
     "component": "VolunteerPage",
     "label": "Volunteer with Us"
   },
@@ -23,18 +16,7 @@
   },
   "blog": {
     "path": "/blog",
-    "hasEmbeddedRouter": true,
     "component": "BlogPage",
     "label": "Blog"
-  },
-  "join": {
-    "path": "/join",
-    "component": "JoinPage",
-    "label": "Join"
-  },
-  "dashboard": {
-    "path": "/dashboard",
-    "component": "DashboardPage",
-    "label": "My Dashboard"
   }
 }

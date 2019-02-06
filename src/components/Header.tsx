@@ -3,8 +3,8 @@ import { css, jsx } from '@emotion/core'
 import { Link } from '@reach/router'
 import { Fragment } from 'react'
 import LayoutContainer from './LayoutContainer'
-import useRoutes from '../hooks/use-routes'
-import useTheme from '../hooks/use-theme'
+import useRoutes from '../hooks/useRoutes'
+import useTheme from '../hooks/useTheme'
 import logo from '../assets/food-not-bombs.svg'
 
 export const jsxFix = jsx
@@ -40,8 +40,7 @@ const Logo = () => {
 
 const Menu = () => {
   const { colors } = useTheme()
-  const { getMenuLinks } = useRoutes()
-
+  const { getMenuLinks, hasLoggedInUser } = useRoutes()
   return (
     <ul
       css={css`
@@ -55,7 +54,14 @@ const Menu = () => {
         text-align: center;
       `}
     >
-      {getMenuLinks().map(({ key, to, label }, index) => {
+      {[
+        ...getMenuLinks(),
+        {
+          key: 'my-fnb',
+          to: hasLoggedInUser() ? 'my-fnb/dashboard' : 'my-fnb',
+          label: hasLoggedInUser() ? 'My Dashboard' : 'Join',
+        },
+      ].map(({ key, to, label }, index) => {
         return (
           <li
             css={css`

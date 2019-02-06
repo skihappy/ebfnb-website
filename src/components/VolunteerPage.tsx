@@ -3,7 +3,6 @@ import { css, jsx } from '@emotion/core'
 import { Fragment } from 'react'
 import { Router, Link, Match } from '@reach/router'
 import PageTitle from './PageTitle'
-import drawing from '../assets/volunteer.png'
 import LazyRoute from './LazyRoute'
 
 export const jsxFix = jsx
@@ -190,7 +189,7 @@ const DefaultPage: Page = () => (
     </PageTitle>
     <div>
       <img
-        src={drawing}
+        src="/images/volunteer-with-us.png"
         alt="Drawing of Food Not Bombs serving food."
         css={css`
           float: right;
@@ -211,13 +210,13 @@ const DefaultPage: Page = () => (
         storage, we need licensed drivers to help with regular donation pick-ups
         from farmers’ markets and super markets, we need help building and
         maintaining our website, we need people to welcome new volunteers.
-        <br />
+      </p>
+      <p>
         Of course you are also welcome to
         {' '}
         <Link to="come-to-our-kitchens">show up to any of our kitchens</Link>
         {' '}
-to
-        help prepare the days meal.
+        to help prepare the days meal.
       </p>
     </div>
   </article>

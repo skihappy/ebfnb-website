@@ -6,8 +6,7 @@ import {
   faListOl,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { string } from 'prop-types'
-import useTheme from '../hooks/use-theme'
+import useTheme from '../hooks/useTheme'
 
 export const jsxFix = jsx
 
