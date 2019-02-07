@@ -9,25 +9,36 @@ export const jsxFix = jsx
 
 type Page = (RouteComponentProps) => JSX.Element
 
-const Breadcrumb = ({ path = [] }: { path?: {key: string, label: string}[]}) => (
+const Breadcrumb = ({
+  path = [],
+}: {
+  path?: { key: string; label: string }[]
+}) => (
   <nav>
-    <ul css={css`
-      list-style: none;
-      margin: 0;
-      padding: 0;
+    <ul
+      css={css`
+        list-style: none;
+        margin: 0;
+        padding: 0;
 
-      li {
-        display: inline-block;
-        & + li {
-          &::before {
-            content: '»';
-            padding: 0 .5rem;
+        li {
+          display: inline-block;
+          & + li {
+            &::before {
+              content: '»';
+              padding: 0 0.5rem;
+            }
           }
         }
-      }
-    `}
+      `}
     >
-      <li>{path.length < 1 ? "Volunteer with East Bay Food Not Bombs" : <Link to="../">Volunteer with East Bay Food Not Bombs</Link>}</li>
+      <li>
+        {path.length < 1 ? (
+          'Volunteer with East Bay Food Not Bombs'
+        ) : (
+          <Link to="../">Volunteer with East Bay Food Not Bombs</Link>
+        )}
+      </li>
       {path.map(item => (
         <li key={item.key}>{item.label}</li>
       ))}
@@ -39,15 +50,15 @@ const Widget = props => (
   <form {...props}>
     <label id="email-label" htmlFor="email">
       My email address:
-      <input
-        id="email"
-        name="email"
-        type="email"
-        css={css`
-          margin: 0.5rem 0;
-        `}
-      />
     </label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      css={css`
+        margin: 0.5rem 0;
+      `}
+    />
     <button type="submit">Yes, I&apos;ll help!</button>
   </form>
 )
@@ -216,7 +227,8 @@ const DefaultPage: Page = () => (
         {' '}
         <Link to="come-to-our-kitchens">show up to any of our kitchens</Link>
         {' '}
-        to help prepare the days meal.
+to
+        help prepare the days meal.
       </p>
     </div>
   </article>

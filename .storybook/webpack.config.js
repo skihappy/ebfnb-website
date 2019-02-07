@@ -1,18 +1,20 @@
-// you can use this file to add your custom webpack plugins, loaders and anything you like.
-// This is just the basic way to add additional webpack configurations.
-// For more information refer the docs: https://storybook.js.org/configurations/custom-webpack-config
+const path = require('path')
 
-// IMPORTANT
-// When you add this file, we won't add the default configurations which is similar
-// to "React Create App". This only has babel loader to load JavaScript.
-
-module.exports = {
-  plugins: [
-    // your custom plugins
-  ],
+module.exports = ({ config, mode }) => ({
+  ...config,
   module: {
+    ...config.module,
     rules: [
-      // add your custom rules.
+      ...config.module.rules,
+      {
+        test: /\.(ts|tsx)$/,
+        include: path.resolve(__dirname, '../src/'),
+        loader: require.resolve('babel-loader'),
+      },
     ],
   },
-};
+  resolve: {
+    ...config.resolve,
+    extensions: [...config.resolve.extensions, '.ts', '.tsx'],
+  },
+})
