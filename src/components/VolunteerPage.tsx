@@ -1,13 +1,15 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 import { Fragment } from 'react'
-import { Router, Link, Match } from '@reach/router'
+import { Router, Link, Match, RouteComponentProps } from '@reach/router'
 import PageTitle from './PageTitle'
 import LazyRoute from './LazyRoute'
+import DangerousHtml from './DangerousHtml'
+import volunteerContent from '../data/volunteerContent'
 
 export const jsxFix = jsx
 
-type Page = (RouteComponentProps) => JSX.Element
+type Page = (props: RouteComponentProps) => JSX.Element
 
 const Breadcrumb = ({
   path = [],
@@ -193,44 +195,18 @@ const KitchensPage: Page = () => (
   </article>
 )
 
+const defaultContent = `
+  <img src="/images/volunteer-with-us.png" alt="Drawing of Food Not Bombs serving food." style="float: right; max-width: 400px; margin-left: 2rem; width: 100%;" />
+  <p>We always can use an extra hand. The kitchen is a good place to start as a new volunteer, but <a href="../volunteer/ways-to-help">there are a number of other ways to help out</a>.</p>
+  <p>You can sign up as volunteer using the form below, but of course you are also welcome to <a href="../volunteer/come-to-our-kitchens">show up to any of our kitchens</a> to help prepare the days meal.</p>
+`
+
 const DefaultPage: Page = () => (
   <article>
-    <PageTitle documentTitle="Volunteer with Us">
-      Volunteer with East Bay Food Not Bombs
+    <PageTitle documentTitle={volunteerContent.default.windowTitle}>
+      {volunteerContent.default.title}
     </PageTitle>
-    <div>
-      <img
-        src="/images/volunteer-with-us.png"
-        alt="Drawing of Food Not Bombs serving food."
-        css={css`
-          float: right;
-          max-width: 400px;
-          margin-left: 2rem;
-          width: 100%;
-        `}
-      />
-      <p>
-        We always can use an extra hand. The kitchen is a good place to start as
-        a new volunteer, but
-        {' '}
-        <Link to="ways-to-help">
-          there are a number of other ways to help out
-        </Link>
-        {'. '}
-        For example, we need help managing our food flow in our pantry and cold
-        storage, we need licensed drivers to help with regular donation pick-ups
-        from farmers’ markets and super markets, we need help building and
-        maintaining our website, we need people to welcome new volunteers.
-      </p>
-      <p>
-        Of course you are also welcome to
-        {' '}
-        <Link to="come-to-our-kitchens">show up to any of our kitchens</Link>
-        {' '}
-to
-        help prepare the days meal.
-      </p>
-    </div>
+    <DangerousHtml html={volunteerContent.default.content} />
   </article>
 )
 

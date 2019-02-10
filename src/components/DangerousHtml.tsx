@@ -24,7 +24,7 @@ const clickListener = event => {
 const hostname = window ? window.location.hostname : ''
 
 const processInternalLinks = (
-  operation: 'add' | 'remove',
+  operation: 'addEventListener' | 'removeEventListener',
   ref: React.MutableRefObject<any>
 ) =>
   ref.current.querySelectorAll('a').forEach(anchor => {
@@ -34,7 +34,7 @@ const processInternalLinks = (
   })
 
 const DangerousHtml = ({ html, ...props }: { html: string }) => {
-  const ref = useRef()
+  const ref = useRef(null)
 
   useEffect(() => {
     processInternalLinks('addEventListener', ref)

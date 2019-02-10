@@ -5,6 +5,7 @@ import InternalNav from './InternalNav'
 import PageTitle from './PageTitle'
 import sections from '../data/aboutContent'
 import Article from './Article'
+import DangerousHtml from './DangerousHtml'
 
 export const jsxFix = jsx
 
@@ -17,8 +18,7 @@ const AboutPage = () => (
     {sections.map(({ id, title, content }) => (
       <Article key={id}>
         <h3>{title}</h3>
-        {/* eslint-disable-next-line react/no-danger */}
-        <div dangerouslySetInnerHTML={{ __html: content }} />
+        <DangerousHtml html={content} />
       </Article>
     ))}
   </Fragment>
