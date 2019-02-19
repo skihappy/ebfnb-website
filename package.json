@@ -71,6 +71,7 @@
     "react-dom": "^16.8.1",
     "resolve": "1.8.1",
     "sass-loader": "7.1.0",
+    "storybook-addon-code": "^0.1.4",
     "style-loader": "0.23.0",
     "terser-webpack-plugin": "1.1.0",
     "typescript": "3.2.4",
@@ -133,5 +134,8 @@
       "jsx",
       "node"
     ]
+  },
+  "devDependencies": {
+    "@storybook/addon-info": "^4.1.12"
   }
 }
