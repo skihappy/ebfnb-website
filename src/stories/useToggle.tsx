@@ -2,7 +2,7 @@
 import { css, jsx } from '@emotion/core'
 import { storiesOf, addDecorator } from '@storybook/react'
 import React, { useState } from 'react'
-import useToggle from '../hooks/useToggle'
+import useToggle from '../hooks/useBoolean'
 import { withInfo } from '@storybook/addon-info'
 
 export const jsxFix = jsx
