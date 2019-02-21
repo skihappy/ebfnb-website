@@ -48,8 +48,8 @@ const useBoolean = (initValue: boolean, key: any) => {
   const callListeners = (event: Event, newValue) =>
     listeners[event].forEach(listener => listener(newValue))
 
-  const set = newValue => {
-    if (value === newValue) {
+  const set = (newValue: boolean) => {
+    if (value !== newValue) {
       setValue(newValue)
       callListeners('onChange', newValue)
       if (newValue === true) {
@@ -59,8 +59,16 @@ const useBoolean = (initValue: boolean, key: any) => {
       }
     }
   }
+  const toggle = () => set(!value)
   const get = () => value
-  return { listen: listen(listeners), unlisten: unlisten(listeners), get, set }
+
+  return {
+    listen: listen(listeners),
+    unlisten: unlisten(listeners),
+    get,
+    set,
+    toggle,
+  }
 }
 
 export const useBooleanListener = (
