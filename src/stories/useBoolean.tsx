@@ -1,30 +1,37 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 import { storiesOf } from '@storybook/react'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import useBoolean from '../hooks/useBoolean'
 
 export default jsx
 
 const App = () => {
-  const { get, toggle, listen } = useBoolean(false, 'bool1')
+  const { getBoolean, toggleBoolean, addEventListener } = useBoolean(
+    false,
+    'bool1'
+  )
   const [count, setCount] = useState(0)
-
+  const booleanValue = getBoolean()
   useEffect(
-    () => listen('onChange', () => setCount(oldCount => oldCount + 1)),
+    () =>
+      addEventListener('onChange', () => setCount(oldCount => oldCount + 1)),
     [true]
   )
-  const buttonCss = css`
-    border: 2px solid black;
-    color: ${get() ? 'red' : 'green'};
-  `
+  const buttonCss = useMemo(
+    () => css`
+      border: 2px solid black;
+      color: ${booleanValue ? 'red' : 'green'};
+    `,
+    [booleanValue]
+  )
   return (
     <div>
       <button
         type="button"
         css={buttonCss}
         onClick={() => {
-          toggle()
+          toggleBoolean()
         }}
       >
         Toggle me
@@ -33,7 +40,7 @@ const App = () => {
         You toggled me
         {count}
         times but now I am
-        {`${get()}`}
+        {`${booleanValue}`}
       </p>
     </div>
   )
