@@ -5,23 +5,23 @@ enum Event {
   onTrue = 'onTrue',
   onFalse = 'onFalse',
 }
-type Listener = (boolean) => never
-type Listeners = Listener[]
-type Unlisten = (Event, Listener) => never
-type Listen = (Event, Listener) => () => never
+type EventListener = (boolean) => void
+type EventListeners = EventListener[]
+type RemoveEventListener = (Event, EventListener) => void
+type AddEventListener = (Event, EventListener) => () => void
 
-const useBoolean = (initValue: boolean) => {
-  const [value, setValue] = useState(initValue)
-  const [listeners] = useState({
+const useBoolean = (initBooleanValue: boolean) => {
+  const [value, setValue] = useState(initBooleanValue)
+  const [booleanListeners] = useState({
     onChange: [],
     onTrue: [],
     onFalse: [],
   })
 
   const callListeners = (event: Event, newValue) =>
-    listeners[event].forEach(listener => listener(newValue))
+    booleanListeners[event].forEach(listener => listener(newValue))
 
-  const set = (newValue: boolean) => {
+  const setBoolean = (newValue: boolean) => {
     if (value !== newValue) {
       setValue(newValue)
       callListeners('onChange', newValue)
@@ -32,24 +32,24 @@ const useBoolean = (initValue: boolean) => {
       }
     }
   }
-  const toggle = () => set(!value)
-  const get = () => value
-  const unlisten: Unlisten = (event, listener) => {
-    const index = listeners[event].indexOf(listener)
+  const toggleBoolean = () => setBoolean(!value)
+  const getBoolean = () => value
+  const removeEventListener: RemoveEventListener = (event, listener) => {
+    const index = booleanListeners[event].indexOf(listener)
     if (index > -1) {
-      listeners[event].splice(index)
+      booleanListeners[event].splice(index)
     }
   }
-  const listen: Listen = (event, listener) => {
-    listeners[event].push(listener)
-    return () => unlisten(event, listener)
+  const addEventListener: AddEventListener = (event, listener) => {
+    booleanListeners[event].push(listener)
+    return () => removeEventListener(event, listener)
   }
   return {
-    listen,
-    unlisten,
-    get,
-    set,
-    toggle,
+    addEventListener,
+    removeEventListener,
+    getBoolean,
+    setBoolean,
+    toggleBoolean,
   }
 }
 
