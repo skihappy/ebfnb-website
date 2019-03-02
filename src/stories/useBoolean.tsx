@@ -6,6 +6,9 @@ import useBoolean from '../hooks/useBoolean'
 
 export default jsx
 
+const CSS = props => {
+  return <div {...props}>iuyqiwuweyf</div>
+}
 const App = () => {
   const { getBoolean, toggleBoolean, addEventListener } = useBoolean(
     false,
@@ -27,6 +30,11 @@ const App = () => {
   )
   return (
     <div>
+      <CSS
+        css={css`
+          color: green;
+        `}
+      />
       <button
         type="button"
         css={buttonCss}
