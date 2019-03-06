@@ -24,11 +24,11 @@ const useBoolean = (initBooleanValue: boolean) => {
   const setBoolean = (newValue: boolean) => {
     if (value !== newValue) {
       setValue(newValue)
-      callListeners('onChange', newValue)
+      callListeners(Event.onChange, newValue)
       if (newValue === true) {
-        callListeners('onTrue', newValue)
+        callListeners(Event.onTrue, newValue)
       } else {
-        callListeners('onFalse', newValue)
+        callListeners(Event.onFalse, newValue)
       }
     }
   }

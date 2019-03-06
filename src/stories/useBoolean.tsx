@@ -10,10 +10,7 @@ const CSS = props => {
   return <div {...props}>iuyqiwuweyf</div>
 }
 const App = () => {
-  const { getBoolean, toggleBoolean, addEventListener } = useBoolean(
-    false,
-    'bool1'
-  )
+  const { getBoolean, toggleBoolean, addEventListener } = useBoolean(false)
   const [count, setCount] = useState(0)
   const booleanValue = getBoolean()
   useEffect(

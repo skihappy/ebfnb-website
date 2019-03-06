@@ -1,74 +1,110 @@
-import React, { ReactNode, useRef } from 'react'
+/** @jsx jsx */
+import { css, jsx, SerializedStyles, keyframes } from '@emotion/core'
+import React, { ReactNode, useMemo } from 'react'
+
+export const jsxFix = jsx
+
+const SLIDE_DURATION = '.1s'
+const CHANGE_OPACITY_DURATION = '.5s'
 
 enum Side {
-  top = 'Top',
-  right = 'Right',
-  bottom = 'Bottom',
-  left = 'Left',
+  top = 'top',
+  right = 'right',
+  bottom = 'bottom',
+  left = 'left',
 }
-interface Transition {
-  timingFunction?: string
-  duration?: number
-  delay?: number
-}
-interface Props {
-  children?: ReactNode
+interface SiderProps {
   side?: Side
-  width?: number | string
+  size?: string
   isOpen?: boolean
-  animation?: Animation
+  children?: any
 }
 
-const Sider = (props: Props) => {
-  const {
-    children = null,
-    side = Side.top,
-    transition,
-    width = 'auto',
-    isOpen = true,
-    ...attrs
-  } = props
-  const ref = useRef(undefined)
+// const useSider = ({
+//   side = Side.left,
+//   size = 'fit-content',
+//   isOpen = true,
+//   ...attrs
+// }: SiderProps) => {
+//   const prevValues = useMemo({ isOpen })
+//   const
+//   const [fullDimention, controlledDimention] =
+//     side === 'top' || side === 'bottom'
+//       ? ['width', 'height']
+//       : ['height', 'width']
+//   const axis = side === 'top' || side === 'bottom' ? 'Y' : 'X'
+//   const siderCss = [
+//     css`
+//       position:absolute;
+//       ${fullDimention}: 100%;
+//       max-${controlledDimention}: 100%;
+//       ${controlledDimention}:${size};
+//     `,
+//     !isOpen &&
+//       css`
+//         ${controlledDimention}: 0px;
+//       `,
+//     // siderEffect({ side, action }),
+//   ]
 
-  let styles = {
-    position: 'absolute',
-  }
+//   const opacityTo = opacity => keyframes`
+//     to {opacity:${opacity}}
+//   `
+//   const scaleTo = scale => keyframes`
+//     to {transform: scale${axis}(${scale})}
+//   `
+//   const slideOpen = keyframes`
+//     to {transform: scale${axis}(1)}
+//   `
+//   const slideClosed = keyframes`
+//     to {transform: scale${axis}(0)}
+//   `
+//   const animateOpen = `${scaleTo(1)} ${SLIDE_DURATION},${opacityTo(
+//     0
+//   )} ${CHANGE_OPACITY_DURATION}`
 
-  const computedDimention = (dimention): number => {
-    const box = ref.current.getBoundingClientRect()
-    if (dimention === 'width') {
-      return box.top - box.bottom
-    }
-    return box.right - box.left
-  }
+//   const animateClose = `${opacityTo(1)} ${CHANGE_OPACITY_DURATION},${scaleTo(
+//     0
+//   )} ${SLIDE_DURATION}`
 
-  if (side === Side.right || side === Side.left) {
-    styles = {
-      ...styles,
-      height: '100%',
-      width,
-      maxWidth: '100%',
-      [side]: isOpen ? 0 : -computedDimention('width'),
-    }
-    styles = { ...styles }
-  } else {
-    styles = {
-      ...styles,
-      width: '100%',
-      height: width,
-      maxHeight: '100%',
-      [side]: `${isOpen ? 0 : -computedDimention('width')}`,
-    }
-  }
-  if (transition) {
-    const { timingFunction = '', duration = 0, delay = 0 } = transition
-    styles = {
-      ...styles,
-      transition: `${side} ${duration} ${timingFunction} ${delay}`,
-    }
-  }
+//   const openCss = css`
+//     animation: ${slideOpen} 2s, ${opacityTo(1)} 2s 2s;
+//   `
+//   const closedCss = css`
+//     animation: ${opacityTo(0)} 2s, ${slideClosed} 2s 2s;
+//   `
+//   return [
+//     css`
+//       transform-origin: ${side};
+//       animation-fill-mode: both;
+//     `,
+//     action === 'open' ? openCss : closedCss,
+//   ]
+// }
+
+const Sider = ({
+  children = null,
+  side = Side.left,
+  size = 'fit-content',
+  isOpen = true,
+  ...attrs
+}: SiderProps) => {
+  const [fullDimention, controlledDimention] =
+    side === 'top' || side === 'bottom'
+      ? ['width', 'height']
+      : ['height', 'width']
+
+  const siderCss = css`
+    ${side}:0;
+    position:absolute;
+    ${fullDimention}: 100%;
+    max-${controlledDimention}: 100%;
+    ${controlledDimention}:${isOpen ? size : 0};
+    overflow:hidden;
+  `
+
   return (
-    <div ref={ref} styles={styles} {...attrs}>
+    <div css={siderCss} {...attrs}>
       {children}
     </div>
   )
