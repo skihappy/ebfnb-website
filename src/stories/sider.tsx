@@ -12,24 +12,25 @@ const MenuItem = (props: any) => (
   </li>
 )
 
-const AnimatedSider = ({ side = 'left', isOpen = true, ...restProps }: any) => {
+const AnimatedSider = ({ isOpen = false, ...restProps }: any) => {
   console.log('animated', isOpen)
   const animationCss = css`
-    transform-origin: ${side};
-    transform: scale(${side === 'top' || side === 'bottom' ? '1,0' : '0,1'});
-    transition: opacity 250ms, transform 250ms 250ms;
-    opacity: 0;
-    &[data-is-open] {
+    transform-origin: left;
+    transform: scale(0, 1});
+    transition: opacity 2500ms, transform 2500ms 2500ms;
+    //opacity: 0;
+    width: fit-content;
+    &[isOpen='true'] {
       transform: scale(1, 1);
       opacity: 1;
-      transition: transform 250ms, opacity 250ms 250ms;
+      transition: transform 2500ms, opacity 2500ms 2500ms;
     }
   `
   return (
     <Sider
       css={animationCss}
-      data-is-open={isOpen}
-      {...{ side, isOpen, ...restProps }}
+      isOpen={isOpen}
+      {...{ isOpen, ...restProps, side: 'left' }}
     />
   )
 }
