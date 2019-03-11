@@ -34,7 +34,8 @@ const Sider = ({
 
   const siderCss = css`
     ${side}:0;
-    position:absolute;
+    ${side === 'top' || side === 'bottom' ? 'left' : 'top'}:0;
+  //  position:absolute;
     ${fullDimention}: 100%;
     max-${controlledDimention}: 100%;
     ${controlledDimention}:${isOpen ? size : 0};
