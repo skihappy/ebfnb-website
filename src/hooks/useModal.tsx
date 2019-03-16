@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
-import { useEffect, useState, useMemo, useRef, ReactNode } from 'react'
+import { useEffect, useMemo, useRef, ReactNode, memo } from 'react'
 
 export const jsxFix = jsx
 
@@ -16,79 +16,177 @@ const FOCUSABLE_SELECTORS = `
   *[tabindex], 
   *[contenteditable]
 `
-const useModal = () => {
-  const defaultModalFocusedElementRef = useRef(null)
-  const mainRef = useRef(null)
-  const modalRef = useRef(null)
-  const [isOpen, setIsOpen] = useState(false)
 
+const useTempFocus = ({ element, isActive }) => {
+  const memo = useMemo(
+    {
+      restoreFocusTo: null,
+    },
+    [true]
+  )
+  useEffect(() => {
+    if (isActive) {
+      memo.restoreFocusTo = document.activeElement
+      if (element) {
+        element.focus()
+      }
+    } else if (memo.restoreFocusTo) {
+      memo.restoreFocusTo.focus()
+    }
+  }, [isActive])
+}
+
+const useTrappedFocus = ({
+  isActive,
+  ref,
+  onEscapedFocusCss = css`
+    transform: scale(0.95, 0.95);
+    transition: transform 0.25s;
+  `,
+}) => {
   const memo = useMemo(
     () => ({
-      lastFocusedElement: null,
+      lastChildFocused: null,
     }),
     [true]
   )
 
-  const closeModal = useMemo(
-    () => () => {
-      setIsOpen(false)
-    },
-    [true]
-  )
+  const onEscapedFocus = () => {
+    if (isActive && memo.lastChildFocused) {
+      memo.lastChildFocused.focus()
+    }
+  }
+  const onChildFocus = ({ target }) => {
+    memo.lastChildFocused = target
+  }
 
-  const openModal = useMemo(
-    () => () => {
-      setIsOpen(true)
-    },
-    [true]
-  )
-
-  const toggleModal = useMemo(
-    () => () => {
-      setIsOpen(state => !state)
-    },
-    [true]
-  )
-
-  const onModalKeyDown = useMemo(
-    () => e => {
-      if (!modalRef.current) {
-        return
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.addEventListener('transitionend', onEscapedFocus)
+      ref.current.addEventListener('focusin', onChildFocus)
+      return () => {
+        ref.current.removeEventListener('transitionend', onEscapedFocus)
+        ref.current.removeEventListener('focusin', onChildFocus)
       }
-      if (e.which === 9) {
-        const { activeElement } = document
-        const focusableElements = [
-          ...modalRef.current.querySelectorAll(FOCUSABLE_SELECTORS),
-        ]
+    }
+  }, [true])
 
-        const firstFocusable = focusableElements[0]
-        const lastFocusable = focusableElements[focusableElements.length - 1]
-        console.log('rocket', document.activeElement, lastFocusable)
+  return isActive
+    ? css`
+        &:not(:focus-within): {
+          ${onEscapedFocusCss}
+        }
+      `
+    : css``
+}
 
-        if (e.shiftKey) {
-          if (activeElement === firstFocusable) {
-            e.preventDefault()
-            lastFocusable.focus()
-          }
-        } else if (activeElement === lastFocusable) {
+const useTrappedTab = ({ ref, isActive }) => {
+  const onKeyDown = e => {
+    if (isActive && e.which === 9) {
+      const focusables = [...ref.current.querySelectorAll(FOCUSABLE_SELECTORS)]
+      const firstFocusable = focusables[0]
+      const lastFocusable = focusables[focusables.length - 1]
+
+      if (e.shiftKey) {
+        if (activeElement === firstFocusable) {
           e.preventDefault()
-          firstFocusable.focus()
+          lastFocusable.focus()
+        }
+      } else if (activeElement === lastFocusable) {
+        e.preventDefault()
+        firstFocusable.focus()
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (ref.current) {
+      const focusablesOfParent = [
+        ...ref.current.parentElement.querySelectorAll(FOCUSABLE_SELECTORS),
+      ]
+      const focusablesInside = [
+        ...ref.current.querySelectorAll(FOCUSABLE_SELECTORS),
+      ]
+      const focusablesOutside = focusablesOfParent.filter(
+        el => !focusablesInside.includes(el)
+      )
+
+      focusablesOutsideModal.forEach(
+        isActive
+          ? el => {
+              el.setAttribute('tabindex', '-1')
+              if (el.getAttribute('aria-hidden') === 'true') {
+                el.setAttribute('data-aria-hidden-true', '')
+              }
+              el.setAttribute('aria-hidden', 'true')
+            }
+          : el => {
+              el.removeAttribute('tabindex')
+              if (!el.hasAttribute('data-aria-hidden-true')) {
+                el.removeAttribute('aria-hidden')
+              } else {
+                el.removeAttribute('data-aria-hidden-true')
+              }
+            }
+      )
+
+      ref.current.addEventListener('keydown', onKeyDown)
+      return () => {
+        if (ref.current) {
+          ref.current.removeEventListener('keydown', onKeyDown)
         }
       }
-    },
-    [true]
-  )
+    }
+  }, [isActive])
+}
 
-  const onEscape = useMemo(
-    () => e => {
-      if (e.which === 27) {
-        closeModal()
-      }
+const useModal = ({ onClose = () => {}, isActive }) => {
+  const defaultFocusedElementRef = useRef(null)
+  const modalRef = useRef(null)
+
+  const onEscape = e => {
+    if (isActive && e.which === 27) {
+      onClose()
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', onEscape)
+    return () => document.removeEventListener('keydown', onEscape)
+  }, [true])
+
+  useEffect(() => {
+    let element
+    if (defaultFocusedElementRef.current) {
+      element = defaultFocusedElementRef.current
+    } else if (modalRef.current) {
+      element = modalRef.current.querySelector(FOCUSABLE_SELECTORS)
+    }
+    useTempFocus({ element, isActive })
+  }, [isActive])
+
+  useTrappedTab({ ref: modalRef, isActive })
+  const trappedFocusCss = useTrappedFocus({ ref: modalRef, isActive })
+
+  const onFocusInsideModal = useMemo(
+    () => ({ target }) => {
+      console.log('onFocusInsideModal', target)
+      memo.lastFocusedInsideModal = target
     },
     [true]
   )
 
   useEffect(() => {
+    const focusablesOfModalParent = [
+      ...modalRef.current.parentElement.querySelectorAll(FOCUSABLE_SELECTORS),
+    ]
+    const focusablesOfModal = [
+      ...modalRef.current.querySelectorAll(FOCUSABLE_SELECTORS),
+    ]
+    const focusablesOutsideModal = focusablesOfModalParent.filter(
+      el => !focusablesOfModal.includes(el)
+    )
+
     /* 
     Deal with transfering focus
     on open - remember last focused element and transfer focus into modal
@@ -97,31 +195,43 @@ const useModal = () => {
     if (isOpen) {
       memo.lastFocusedElement = document.activeElement
       if (modalRef.current) {
+        modalRef.current.addEventListener('transitionend', onEscapedFocus)
         if (defaultModalFocusedElementRef.current) {
           defaultModalFocusedElementRef.current.focus()
-        } else {
-          const focusableElements = modalRef.current.querySelectorAll(
-            FOCUSABLE_SELECTORS
-          )
-          if (focusableElements[0]) focusableElements[0].focus()
+        } else if (focusablesOfModal[0]) {
+          focusablesOfModal[0].focus()
         }
       }
       document.addEventListener('keydown', onEscape)
-    } else if (memo.lastFocusedElement) {
-      memo.lastFocusedElement.focus()
-      document.removeEventListener('keydown', onEscape)
+    } else {
+      modalRef.current.removeEventListener('transitionend', onEscapedFocus)
+      if (memo.lastFocusedElement) {
+        memo.lastFocusedElement.focus()
+        document.removeEventListener('keydown', onEscape)
+      }
     }
 
     // on open - remove all focusable elements in main from tabbing sequence
     // on close - restore them back into tabbing sequence
-    if (mainRef.current) {
-      mainRef.current
-        .querySelectorAll(FOCUSABLE_SELECTORS)
-        .forEach(
-          isOpen
-            ? el => el.setAttribute('tabindex', '-1')
-            : el => el.removeAttribute('tabindex')
-        )
+    if (modalRef.current) {
+      focusablesOutsideModal.forEach(
+        isOpen
+          ? el => {
+              el.setAttribute('tabindex', '-1')
+              if (el.getAttribute('aria-hidden') === 'true') {
+                el.setAttribute('data-aria-hidden-true', '')
+              }
+              el.setAttribute('aria-hidden', 'true')
+            }
+          : el => {
+              el.removeAttribute('tabindex')
+              if (!el.hasAttribute('data-aria-hidden-true')) {
+                el.removeAttribute('aria-hidden')
+              } else {
+                el.removeAttribute('data-aria-hidden-true')
+              }
+            }
+      )
     }
   }, [isOpen])
 
@@ -170,29 +280,25 @@ const useModal = () => {
           css`
             height: ${height};
           `,
+        isOpen &&
+          css`
+            &:not(:focus-within) {
+              transform: translate(-50%, -50%) scale(0.9, 0.9);
+              transition: transform 0.25s;
+            }
+          `,
       ],
       onKeyDown: onModalKeyDown,
+      onFocus: onFocusInsideModal,
       ref: modalRef,
       ...restProps,
     }
   }
 
-  const modalMainProps = (props = {}) => ({
-    ref: mainRef,
-    'aria-hidden': isOpen ? 'true' : 'false',
-    css: css`
-      z-index: 997;
-    `,
-    ...props,
-  })
-
   return {
     modalOverlayProps,
-    modalMainProps,
     modalProps,
-    openModal,
-    closeModal,
-    toggleModal,
+    defaultFocusedElementRef: defaultModalFocusedElementRef,
   }
 }
 
