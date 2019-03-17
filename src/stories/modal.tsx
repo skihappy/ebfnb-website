@@ -1,16 +1,15 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 import { storiesOf } from '@storybook/react'
-import React, { useState } from 'react'
-import PageTitle from '../components/PageTitle'
+import React, { useState, useEffect } from 'react'
 import useModal from '../hooks/useModal'
 
 export const jsxFix = jsx
 
-const Modal = ({ onClose, isOpen }) => {
+const Modal = ({ onClose, isActive }) => {
   const { modalProps, defaultFocusedElementRef, modalOverlayProps } = useModal({
     onClose,
-    isOpen,
+    isActive,
   })
 
   return (
@@ -34,12 +33,13 @@ const Modal = ({ onClose, isOpen }) => {
   )
 }
 const App = () => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isActive, setIsActive] = useState(false)
+
   return (
     <div>
       <button
         type="button"
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsActive(true)}
         css={css`
           border: 2px solid red;
         `}
@@ -48,7 +48,7 @@ const App = () => {
       </button>
       <input type="input" />
       <input type="input" />
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <Modal isActive={isActive} onClose={() => setIsActive(false)} />
     </div>
   )
 }

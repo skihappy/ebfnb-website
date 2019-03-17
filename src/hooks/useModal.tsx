@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
-import { useEffect, useMemo, useRef, ReactNode, memo } from 'react'
+import { useEffect, useState, useMemo, useRef, ReactNode } from 'react'
 
 export const jsxFix = jsx
 
@@ -17,17 +17,20 @@ const FOCUSABLE_SELECTORS = `
   *[contenteditable]
 `
 
-const useTempFocus = ({ element, isActive }) => {
+const useTempFocus = ({ ref, isActive }) => {
   const memo = useMemo(
-    {
+    () => ({
       restoreFocusTo: null,
-    },
+    }),
     [true]
   )
   useEffect(() => {
     if (isActive) {
       memo.restoreFocusTo = document.activeElement
-      if (element) {
+      if (ref.current) {
+        const element = ref.current.matches(FOCUSABLE_SELECTORS)
+          ? ref.current
+          : ref.current.querySelector(FOCUSABLE_SELECTORS)
         element.focus()
       }
     } else if (memo.restoreFocusTo) {
@@ -52,11 +55,13 @@ const useTrappedFocus = ({
   )
 
   const onEscapedFocus = () => {
+    console.log(isActive, memo.lastChildFocused)
     if (isActive && memo.lastChildFocused) {
       memo.lastChildFocused.focus()
     }
   }
   const onChildFocus = ({ target }) => {
+    console.log('onChildFocus')
     memo.lastChildFocused = target
   }
 
@@ -69,12 +74,14 @@ const useTrappedFocus = ({
         ref.current.removeEventListener('focusin', onChildFocus)
       }
     }
-  }, [true])
+  }, [isActive])
 
   return isActive
     ? css`
         &:not(:focus-within): {
-          ${onEscapedFocusCss}
+          transform: scale(0.95, 0.95);
+          transition: transform 0.25s;
+        //  ${onEscapedFocusCss}
         }
       `
     : css``
@@ -83,6 +90,7 @@ const useTrappedFocus = ({
 const useTrappedTab = ({ ref, isActive }) => {
   const onKeyDown = e => {
     if (isActive && e.which === 9) {
+      const { activeElement } = document
       const focusables = [...ref.current.querySelectorAll(FOCUSABLE_SELECTORS)]
       const firstFocusable = focusables[0]
       const lastFocusable = focusables[focusables.length - 1]
@@ -111,7 +119,7 @@ const useTrappedTab = ({ ref, isActive }) => {
         el => !focusablesInside.includes(el)
       )
 
-      focusablesOutsideModal.forEach(
+      focusablesOutside.forEach(
         isActive
           ? el => {
               el.setAttribute('tabindex', '-1')
@@ -144,102 +152,30 @@ const useModal = ({ onClose = () => {}, isActive }) => {
   const defaultFocusedElementRef = useRef(null)
   const modalRef = useRef(null)
 
-  const onEscape = e => {
-    if (isActive && e.which === 27) {
-      onClose()
-    }
-  }
-
   useEffect(() => {
+    const onEscape = e => {
+      if (isActive && e.which === 27) {
+        onClose()
+      }
+    }
     document.addEventListener('keydown', onEscape)
     return () => document.removeEventListener('keydown', onEscape)
-  }, [true])
-
-  useEffect(() => {
-    let element
-    if (defaultFocusedElementRef.current) {
-      element = defaultFocusedElementRef.current
-    } else if (modalRef.current) {
-      element = modalRef.current.querySelector(FOCUSABLE_SELECTORS)
-    }
-    useTempFocus({ element, isActive })
   }, [isActive])
+
+  const refToFocus = defaultFocusedElementRef
+    ? defaultFocusedElementRef
+    : modalRef
+
+  useTempFocus({ ref: refToFocus, isActive })
 
   useTrappedTab({ ref: modalRef, isActive })
   const trappedFocusCss = useTrappedFocus({ ref: modalRef, isActive })
-
-  const onFocusInsideModal = useMemo(
-    () => ({ target }) => {
-      console.log('onFocusInsideModal', target)
-      memo.lastFocusedInsideModal = target
-    },
-    [true]
-  )
-
-  useEffect(() => {
-    const focusablesOfModalParent = [
-      ...modalRef.current.parentElement.querySelectorAll(FOCUSABLE_SELECTORS),
-    ]
-    const focusablesOfModal = [
-      ...modalRef.current.querySelectorAll(FOCUSABLE_SELECTORS),
-    ]
-    const focusablesOutsideModal = focusablesOfModalParent.filter(
-      el => !focusablesOfModal.includes(el)
-    )
-
-    /* 
-    Deal with transfering focus
-    on open - remember last focused element and transfer focus into modal
-    on close - restore focus to the last focused in main
-    */
-    if (isOpen) {
-      memo.lastFocusedElement = document.activeElement
-      if (modalRef.current) {
-        modalRef.current.addEventListener('transitionend', onEscapedFocus)
-        if (defaultModalFocusedElementRef.current) {
-          defaultModalFocusedElementRef.current.focus()
-        } else if (focusablesOfModal[0]) {
-          focusablesOfModal[0].focus()
-        }
-      }
-      document.addEventListener('keydown', onEscape)
-    } else {
-      modalRef.current.removeEventListener('transitionend', onEscapedFocus)
-      if (memo.lastFocusedElement) {
-        memo.lastFocusedElement.focus()
-        document.removeEventListener('keydown', onEscape)
-      }
-    }
-
-    // on open - remove all focusable elements in main from tabbing sequence
-    // on close - restore them back into tabbing sequence
-    if (modalRef.current) {
-      focusablesOutsideModal.forEach(
-        isOpen
-          ? el => {
-              el.setAttribute('tabindex', '-1')
-              if (el.getAttribute('aria-hidden') === 'true') {
-                el.setAttribute('data-aria-hidden-true', '')
-              }
-              el.setAttribute('aria-hidden', 'true')
-            }
-          : el => {
-              el.removeAttribute('tabindex')
-              if (!el.hasAttribute('data-aria-hidden-true')) {
-                el.removeAttribute('aria-hidden')
-              } else {
-                el.removeAttribute('data-aria-hidden-true')
-              }
-            }
-      )
-    }
-  }, [isOpen])
-
-  const modalOverlayProps = (props = {}) => {
+  console.log(trappedFocusCss)
+  const modalOverlayProps = (props: any = {}) => {
     const { opacity = '.5', ...restProps } = props
     return {
       css: css`
-        display: ${isOpen ? 'block' : 'none'};
+        display: ${isActive ? 'block' : 'none'};
         position: fixed;
         left: 0;
         top: 0;
@@ -253,7 +189,7 @@ const useModal = ({ onClose = () => {}, isActive }) => {
     }
   }
 
-  const modalProps = (props = {}) => {
+  const modalProps = (props: any = {}) => {
     const {
       width = '60%',
       height,
@@ -266,7 +202,7 @@ const useModal = ({ onClose = () => {}, isActive }) => {
     return {
       css: [
         css`
-          display: ${isOpen ? 'block' : 'none'};
+          display: ${isActive ? 'block' : 'none'};
           position: fixed;
           width: ${width};
           max-width: ${maxWidth};
@@ -280,16 +216,8 @@ const useModal = ({ onClose = () => {}, isActive }) => {
           css`
             height: ${height};
           `,
-        isOpen &&
-          css`
-            &:not(:focus-within) {
-              transform: translate(-50%, -50%) scale(0.9, 0.9);
-              transition: transform 0.25s;
-            }
-          `,
+        trappedFocusCss,
       ],
-      onKeyDown: onModalKeyDown,
-      onFocus: onFocusInsideModal,
       ref: modalRef,
       ...restProps,
     }
@@ -298,7 +226,7 @@ const useModal = ({ onClose = () => {}, isActive }) => {
   return {
     modalOverlayProps,
     modalProps,
-    defaultFocusedElementRef: defaultModalFocusedElementRef,
+    defaultFocusedElementRef,
   }
 }
 
