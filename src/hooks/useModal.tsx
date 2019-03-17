@@ -211,12 +211,17 @@ const useModal = ({ onClose = () => {}, isActive }) => {
           left: calc(50% + ${offsetX});
           transform: translate(-50%, -50%);
           z-index: 999;
+          &:focus-within: {
+            opacity: 0.5;
+            transform: scale(0.95, 0.95);
+            transition: transform 0.25s;
+          }
         `,
         height &&
           css`
             height: ${height};
           `,
-        trappedFocusCss,
+        //  trappedFocusCss,
       ],
       ref: modalRef,
       ...restProps,
