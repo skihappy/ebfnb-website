@@ -1,6 +1,6 @@
 import { storiesOf } from '@storybook/react'
 import React from 'react'
-import PageTitle from '../components/PageTitle'
+import PageTitle from './PageTitle'
 
 storiesOf('PageTitle', module)
   .add('is a happy title', () => <PageTitle>Happy Title</PageTitle>)
