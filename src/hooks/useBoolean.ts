@@ -1,55 +1,52 @@
 import { useState, useEffect } from 'react'
 
-enum Event {
-  onChange = 'onChange',
-  onTrue = 'onTrue',
-  onFalse = 'onFalse',
+type Listener = (value: boolean) => void
+type Unsubscriber = () => void
+type Subscriber = (listener: Listener) => Unsubscriber
+
+const addListener = setListeners => listener => {
+  setListeners(listeners => [...listeners, listener])
+
+  return () =>
+    setListeners(listeners => listeners.filter(fn => fn !== listener))
 }
-type EventListener = (boolean) => void
-type EventListeners = EventListener[]
-type RemoveEventListener = (Event, EventListener) => void
-type AddEventListener = (Event, EventListener) => () => void
 
-const useBoolean = (initBooleanValue: boolean) => {
-  const [value, setValue] = useState(initBooleanValue)
-  const [booleanListeners] = useState({
-    onChange: [],
-    onTrue: [],
-    onFalse: [],
-  })
+const useBoolean = (
+  initial: boolean
+): {
+  onBooleanChange: Subscriber
+  onBooleanTrue: Subscriber
+  onBooleanFalse: Subscriber
+  getBoolean: () => boolean
+  setBoolean: (value: boolean) => boolean
+  toggleBoolean: () => boolean
+} => {
+  const [state, setState] = useState(initial)
+  const [onChangeListeners, setOnChangeListeners] = useState([])
+  const [onFalseListeners, setOnFalseListeners] = useState([])
+  const [onTrueListeners, setOnTrueListeners] = useState([])
 
-  const callListeners = (event: Event, newValue) =>
-    booleanListeners[event].forEach(listener => listener(newValue))
+  const changeState = (value: boolean) => {
+    if (state !== value) {
+      setState(value)
+      onChangeListeners.forEach(fn => fn(value))
 
-  const setBoolean = (newValue: boolean) => {
-    if (value !== newValue) {
-      setValue(newValue)
-      callListeners('onChange', newValue)
-      if (newValue === true) {
-        callListeners('onTrue', newValue)
+      if (value === true) {
+        onTrueListeners.forEach(fn => fn(value))
       } else {
-        callListeners('onFalse', newValue)
+        onFalseListeners.forEach(fn => fn(value))
       }
     }
+    return value
   }
-  const toggleBoolean = () => setBoolean(!value)
-  const getBoolean = () => value
-  const removeEventListener: RemoveEventListener = (event, listener) => {
-    const index = booleanListeners[event].indexOf(listener)
-    if (index > -1) {
-      booleanListeners[event].splice(index)
-    }
-  }
-  const addEventListener: AddEventListener = (event, listener) => {
-    booleanListeners[event].push(listener)
-    return () => removeEventListener(event, listener)
-  }
+
   return {
-    addEventListener,
-    removeEventListener,
-    getBoolean,
-    setBoolean,
-    toggleBoolean,
+    onBooleanChange: addListener(setOnChangeListeners),
+    onBooleanTrue: addListener(setOnTrueListeners),
+    onBooleanFalse: addListener(setOnFalseListeners),
+    getBoolean: () => state,
+    setBoolean: changeState,
+    toggleBoolean: () => changeState(!state),
   }
 }
 

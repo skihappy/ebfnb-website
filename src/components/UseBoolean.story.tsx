@@ -7,40 +7,36 @@ import useBoolean from '../hooks/useBoolean'
 export default jsx
 
 const App = () => {
-  const { getBoolean, toggleBoolean, addEventListener } = useBoolean(
+  const { getBoolean, toggleBoolean, onBooleanChange } = useBoolean(
     false,
     'bool1'
   )
   const [count, setCount] = useState(0)
-  const booleanValue = getBoolean()
-  useEffect(
-    () =>
-      addEventListener('onChange', () => setCount(oldCount => oldCount + 1)),
-    [true]
-  )
+
+  useEffect(() => {
+    return onBooleanChange(() => setCount(p => p + 1))
+  }, [onBooleanChange])
+
+  const isBooleanTrue = getBoolean()
+
   const buttonCss = useMemo(
     () => css`
       border: 2px solid black;
-      color: ${booleanValue ? 'red' : 'green'};
+      color: ${isBooleanTrue ? 'red' : 'green'};
     `,
-    [booleanValue]
+    [isBooleanTrue]
   )
+
   return (
     <div>
-      <button
-        type="button"
-        css={buttonCss}
-        onClick={() => {
-          toggleBoolean()
-        }}
-      >
+      <button type="button" css={buttonCss} onClick={toggleBoolean}>
         Toggle me
       </button>
       <p>
-        You toggled me
-        {count}
-        times but now I am
-        {`${booleanValue}`}
+        {`You toggled me `}
+        <strong>{count}</strong>
+        {` times but now I am `}
+        <strong>{isBooleanTrue.toString()}</strong>
       </p>
     </div>
   )
