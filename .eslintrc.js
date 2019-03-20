@@ -3,7 +3,7 @@ const restrictedGlobals = require('confusing-browser-globals')
 module.exports = {
   parser: '@typescript-eslint/parser',
   extends: ['airbnb', 'plugin:jsx-a11y/recommended', 'prettier'],
-  plugins: [ '@typescript-eslint', 'react-hooks', 'emotion'],
+  plugins: ['@typescript-eslint', 'react-hooks', 'emotion'],
   env: {
     browser: true,
     commonjs: true,
@@ -23,6 +23,8 @@ module.exports = {
     /* @todo Fix this rule! */
     'no-unused-vars': 'off',
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.tsx'] }],
+    'react-hooks/exhaustive-deps': 'warn',
+    'react-hooks/rules-of-hooks': 'error',
   },
   settings: {
     'import/resolver': {
